@@ -59,7 +59,7 @@
                 {
                     "name": "down",
                     "id": "adc6b297-0dd2-4cd8-9e55-4298cfbf69c3",
-                    "path": "<Mouse>/scroll/right",
+                    "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

@@ -32,6 +32,7 @@ namespace UnityTutorial.Manager
                 enabled = false; // ปิดการทำงานของสคริปต์หากไม่มี PlayerInput
                 return;
             }
+            HideCursor();
 
             _currentMap = playerInput.currentActionMap;
             _moveAction = _currentMap.FindAction("Move");
@@ -45,6 +46,12 @@ namespace UnityTutorial.Manager
             _moveAction.canceled += OnMove;
             _lookAction.canceled += OnLook;
             _runAction.canceled += OnRun;
+        }
+        private void HideCursor()
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+
         }
 
         private void OnMove(InputAction.CallbackContext context)
