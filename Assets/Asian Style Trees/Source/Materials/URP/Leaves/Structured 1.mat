@@ -24,8 +24,9 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Structured 1
-  m_Shader: {fileID: -6465566751694194690, guid: 66ce69aa57b06a0459df37d174c1ad64,
-    type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 66ce69aa57b06a0459df37d174c1ad64, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
@@ -44,6 +45,7 @@ Material:
   - TransparentBackface
   - RayTracingPrepass
   - MOTIONVECTORS
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -139,8 +141,7 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 0
     m_Colors:
-    - Color_f81cfcc9b99a474895c54af03c1fefd0: {r: 0.41901034, g: 0.8301887, b: 0.4235128,
-        a: 0}
+    - Color_f81cfcc9b99a474895c54af03c1fefd0: {r: 0.41901034, g: 0.8301887, b: 0.4235128, a: 0}
     - Vector2_8e39cc9d9407448cb5fc78370e60216c: {r: 1, g: 0, b: 0, a: 0}
     - Vector2_ee3da453ee474862bd12028a3df74cd4: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 0}
@@ -159,4 +160,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 5
+  version: 7
