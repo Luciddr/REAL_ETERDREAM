@@ -43,6 +43,7 @@ namespace UnityTutorial.Manager
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+            
         }
 
         private void onMove(InputAction.CallbackContext context)
