@@ -24,7 +24,7 @@ namespace UnityTutorial.PlayerControl
 
         private float _xRotation;
         private const float _walkSpeed = 2f;
-        private const float _runSpeed = 6f;
+        private const float _runSpeed = 8f;
 
         private void Start()
         {
