@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,99 +13,88 @@ namespace UnityTutorial.PlayerControl
         [SerializeField] private float UpperLimit = -40f;
         [SerializeField] private float BottomLimit = 70f;
         [SerializeField] private float MouseSensitivity = 21.9f;
-        
-        private Rigidbody _playerRigidbody;
+
+        private Rigidbody _playerRigibody;
         private InputManager _inputManager;
         private Animator _animator;
-       
+
         private bool _hasAnimator;
         private int _xVelHash;
         private int _yVelHash;
-       
-        private int _zVelHash;
-        
-        private float _xRotation;
 
+        private float _xRotation;
         private const float _walkSpeed = 2f;
         private const float _runSpeed = 6f;
-        private Vector2 _currentVelocity;
-        
 
+        private void Start()
+        {
+            _animator = GetComponent<Animator>();
+            _hasAnimator = _animator != null;
 
-        private void Start() {
-            _hasAnimator = TryGetComponent<Animator>(out _animator);
-            _playerRigidbody = GetComponent<Rigidbody>();
+            _playerRigibody = GetComponent<Rigidbody>();
             _inputManager = GetComponent<InputManager>();
-
 
             _xVelHash = Animator.StringToHash("X_Velocity");
             _yVelHash = Animator.StringToHash("Y_Velocity");
-            _zVelHash = Animator.StringToHash("Z_Velocity");
-            
         }
 
-        private void FixedUpdate() {
-            
+        private void FixedUpdate()
+        {
             Move();
-            
         }
-        private void LateUpdate() {
-            CamMovements();
+
+        private void LateUpdate()
+        {
+            CamMovement();
         }
 
         private void Move()
         {
-            if(!_hasAnimator) return;
+            if (!_hasAnimator) return;
 
             float targetSpeed = _inputManager.Run ? _runSpeed : _walkSpeed;
-            if(_inputManager.Crouch) targetSpeed = 1.5f;
-            if(_inputManager.Move ==Vector2.zero) targetSpeed = 0;
+            if (_inputManager.Move == Vector2.zero) targetSpeed = 0f;
 
-            if(_grounded)
-            {
-                
-            _currentVelocity.x = Mathf.Lerp(_currentVelocity.x, _inputManager.Move.x * targetSpeed, AnimBlendSpeed * Time.fixedDeltaTime);
-            _currentVelocity.y =  Mathf.Lerp(_currentVelocity.y, _inputManager.Move.y * targetSpeed, AnimBlendSpeed * Time.fixedDeltaTime);
+            // --- กล้องเป็นตัวกำหนดทิศทางการเคลื่อนที่ ---
+            Vector3 inputDir = new Vector3(_inputManager.Move.x, 0f, _inputManager.Move.y);
+            Vector3 camForward = Camera.forward;
+            Vector3 camRight = Camera.right;
 
-            var xVelDifference = _currentVelocity.x - _playerRigidbody.velocity.x;
-            var zVelDifference = _currentVelocity.y - _playerRigidbody.velocity.z;
+            camForward.y = 0f;
+            camRight.y = 0f;
+            camForward.Normalize();
+            camRight.Normalize();
 
-            _playerRigidbody.AddForce(transform.TransformVector(new Vector3(xVelDifference, 0 , zVelDifference)), ForceMode.VelocityChange);
-            }
-            else
-            {
-                _playerRigidbody.AddForce(transform.TransformVector(new Vector3(_currentVelocity.x * AirResistance,0,_currentVelocity.y * AirResistance)), ForceMode.VelocityChange);
-            }
+            Vector3 moveDir = (camForward * inputDir.z + camRight * inputDir.x).normalized;
+            Vector3 targetVelocity = moveDir * targetSpeed;
 
+            // คำนวณความต่างของความเร็ว
+            Vector3 currentVelocity = new Vector3(_playerRigibody.velocity.x, 0f, _playerRigibody.velocity.z);
+            Vector3 velocityDiff = targetVelocity - currentVelocity;
 
-            _animator.SetFloat(_xVelHash , _currentVelocity.x);
-            _animator.SetFloat(_yVelHash, _currentVelocity.y);
+            // Apply movement
+            _playerRigibody.AddForce(velocityDiff, ForceMode.VelocityChange);
+
+            // อัปเดตค่าให้ Animator (ใช้ local space)
+            Vector3 localVelocity = transform.InverseTransformDirection(targetVelocity);
+            _animator.SetFloat(_xVelHash, Mathf.Lerp(_animator.GetFloat(_xVelHash), localVelocity.x, AnimBlendSpeed * Time.fixedDeltaTime));
+            _animator.SetFloat(_yVelHash, Mathf.Lerp(_animator.GetFloat(_yVelHash), localVelocity.z, AnimBlendSpeed * Time.fixedDeltaTime));
         }
 
-        private void CamMovements()
+        private void CamMovement()
         {
-            if(!_hasAnimator) return;
+            if (!_hasAnimator) return;
 
-            var Mouse_X = _inputManager.Look.x;
-            var Mouse_Y = _inputManager.Look.y;
+            var mouseX = _inputManager.Look.x;
+            var mouseY = _inputManager.Look.y;
+
             Camera.position = CameraRoot.position;
-            
-            
-            _xRotation -= Mouse_Y * MouseSensitivity * Time.smoothDeltaTime;
+
+            _xRotation -= mouseY * MouseSensitivity * Time.deltaTime;
             _xRotation = Mathf.Clamp(_xRotation, UpperLimit, BottomLimit);
 
-            Camera.localRotation = Quaternion.Euler(_xRotation, 0 , 0);
-            _playerRigidbody.MoveRotation(_playerRigidbody.rotation * Quaternion.Euler(0, Mouse_X * MouseSensitivity * Time.smoothDeltaTime, 0));
+            Camera.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
+            _playerRigibody.MoveRotation(_playerRigibody.rotation * Quaternion.Euler(0f, mouseX * MouseSensitivity * Time.deltaTime, 0f));
         }
-
-        
-
-        
-
-        
-
-       
-
-        
     }
 }
